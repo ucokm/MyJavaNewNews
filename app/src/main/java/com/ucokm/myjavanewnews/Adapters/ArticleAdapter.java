@@ -39,7 +39,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
         if(!TextUtils.isEmpty(articleModel.getDescription())) {
             viewHolder.descriptionText.setText(articleModel.getDescription());
         }
-        viewHolder.artilceAdapterParentLinear.setTag(articleModel);
+        viewHolder.layout.setTag(articleModel);
     }
 
     @Override
@@ -50,13 +50,13 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
     class ViewHolder extends RecyclerView.ViewHolder{
         private TextView titleText;
         private TextView descriptionText;
-        private LinearLayout artilceAdapterParentLinear;
+        private LinearLayout layout;
         ViewHolder(View view) {
             super(view);
-            titleText = view.findViewById(R.id.article_adapter_tv_title);
-            descriptionText = view.findViewById(R.id.article_adapter_tv_description);
-            artilceAdapterParentLinear = view.findViewById(R.id.article_adapter_ll_parent);
-            artilceAdapterParentLinear.setOnClickListener(new View.OnClickListener() {
+            titleText = view.findViewById(R.id.article_title);
+            descriptionText = view.findViewById(R.id.article_description);
+            layout = view.findViewById(R.id.article_layout);
+            layout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (onRecyclerViewItemClickListener != null) {

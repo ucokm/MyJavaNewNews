@@ -9,7 +9,7 @@ import retrofit2.http.Query;
 
 public interface ApiInterface {
     @GET("top-headlines")
-    Call<RespNewsModel> getNewsCategories(@Query("category") String category, @Query("country") String country, @Query("apiKey") String apiKey);
+    Call<RespNewsModel> getArticleNews(@Query("sources") String sources, @Query("apiKey") String apiKey);
 
     @GET("sources")
     Call<RespSourceNewsModel> getSourceNews(@Query("category") String category, @Query("apiKey") String apiKey);

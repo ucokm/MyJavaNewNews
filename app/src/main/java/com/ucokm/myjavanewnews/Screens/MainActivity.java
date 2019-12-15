@@ -11,17 +11,13 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.basgeekball.awesomevalidation.AwesomeValidation;
 import com.basgeekball.awesomevalidation.ValidationHolder;
 import com.basgeekball.awesomevalidation.utility.custom.CustomErrorReset;
 import com.basgeekball.awesomevalidation.utility.custom.CustomValidation;
 import com.basgeekball.awesomevalidation.utility.custom.CustomValidationCallback;
-import com.ucokm.myjavanewnews.Adapters.ArticleAdapter;
 import com.ucokm.myjavanewnews.Adapters.SourceNewsAdapter;
-import com.ucokm.myjavanewnews.DataModel.Article;
-import com.ucokm.myjavanewnews.DataModel.RespNewsModel;
 import com.ucokm.myjavanewnews.DataModel.RespSourceNewsModel;
 import com.ucokm.myjavanewnews.DataModel.SourceNews;
 import com.ucokm.myjavanewnews.Network.ApiClient;
@@ -179,32 +175,6 @@ public class MainActivity extends BaseActivity implements OnRecyclerViewItemClic
         });
     }
 
-    private void doLoadNews() {
-        showProgressDialog(null, getString(R.string.progress_loading), false);
-        Call<RespNewsModel> call = service.getNewsCategories(category, country, API_KEY);
-        call.enqueue(new Callback<RespNewsModel>() {
-            @Override
-            public void onResponse(Call<RespNewsModel> call, Response<RespNewsModel> response) {
-                dismissProgressDialog();
-                // check response if status is ok
-                if(response.body().getStatus().equals("ok")) {
-                    List<Article> articles = response.body().getArticles();
-                    if(articles.size() > 0) {
-                        Toast.makeText(getApplicationContext(), "Total articles : " + articles.size(), Toast.LENGTH_LONG).show();
-                        final ArticleAdapter articleAdapter = new ArticleAdapter(articles);
-                        articleAdapter.setOnRecyclerViewItemClickListener(MainActivity.this);
-                        rcvSourceNews.setAdapter(articleAdapter);
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<RespNewsModel> call, Throwable t) {
-                dismissProgressDialog();
-            }
-        });
-    }
-
     @Override
     public void setOnRecyclerViewItemClickListener(OnRecyclerViewItemClickListener listener) {
         this.setOnRecyclerViewItemClickListener(listener);
@@ -213,12 +183,12 @@ public class MainActivity extends BaseActivity implements OnRecyclerViewItemClic
     @Override
     public void onItemClick(int position, View view) {
         switch (view.getId()) {
-            case R.id.article_adapter_ll_parent:
-                Article article = (Article) view.getTag();
-                if (!TextUtils.isEmpty(article.getUrl())) {
-                    Intent webActivity = new Intent(this, DetailArticleActivity.class);
-                    webActivity.putExtra("url", article.getUrl());
-                    startActivity(webActivity);
+            case R.id.source_news_layout:
+                SourceNews sourceNews = (SourceNews) view.getTag();
+                if (!TextUtils.isEmpty(sourceNews.getId())) {
+                    Intent articleNewsActivity = new Intent(this, ArticleNewsActivity.class);
+                    articleNewsActivity.putExtra("sources", sourceNews.getId());
+                    startActivity(articleNewsActivity);
                 }
                 break;
         }

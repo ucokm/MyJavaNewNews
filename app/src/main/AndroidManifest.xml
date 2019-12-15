@@ -19,6 +19,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".Screens.DetailArticleActivity"/>
+        <activity android:name=".Screens.ArticleNewsActivity"/>
     </application>
 
 </manifest>
