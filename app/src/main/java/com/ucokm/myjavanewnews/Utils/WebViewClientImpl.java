@@ -7,7 +7,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 public class WebViewClientImpl extends WebViewClient {
-    private Activity activity = null;
+    private Activity activity;
 
     public WebViewClientImpl(Activity activity) {
         this.activity = activity;

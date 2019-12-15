@@ -3,7 +3,7 @@ package com.ucokm.myjavanewnews.DataModel;
 import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
-public class RespNewsModel {
+public class RespArticleNewsModel {
     @SerializedName("status")
     private String status;
 

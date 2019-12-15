@@ -9,15 +9,20 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.basgeekball.awesomevalidation.AwesomeValidation;
 import com.basgeekball.awesomevalidation.ValidationHolder;
 import com.basgeekball.awesomevalidation.utility.custom.CustomErrorReset;
 import com.basgeekball.awesomevalidation.utility.custom.CustomValidation;
 import com.basgeekball.awesomevalidation.utility.custom.CustomValidationCallback;
+import com.ucokm.myjavanewnews.Adapters.ArticleAdapter;
 import com.ucokm.myjavanewnews.Adapters.SourceNewsAdapter;
+import com.ucokm.myjavanewnews.DataModel.Article;
+import com.ucokm.myjavanewnews.DataModel.RespArticleNewsModel;
 import com.ucokm.myjavanewnews.DataModel.RespSourceNewsModel;
 import com.ucokm.myjavanewnews.DataModel.SourceNews;
 import com.ucokm.myjavanewnews.Network.ApiClient;
@@ -35,10 +40,10 @@ import retrofit2.Response;
 import static com.basgeekball.awesomevalidation.ValidationStyle.BASIC;
 
 public class MainActivity extends BaseActivity implements OnRecyclerViewItemClickListener {
-    private RecyclerView rcvSourceNews;
-    private Spinner spnCountry, spnCategory;
-    private Button btnLoadSourceNews;
-    private String country = "";
+    private RecyclerView rcvSourceNews, rcvArticleNews;
+    private Spinner spnCategory;
+    private Button btnLoadSourceNews, btnLoadArticleNews;
+    private EditText editKeyword;
     private String category = "";
     final ApiInterface service = ApiClient.getClient().create(ApiInterface.class);
     AwesomeValidation validation;
@@ -49,26 +54,16 @@ public class MainActivity extends BaseActivity implements OnRecyclerViewItemClic
         setContentView(R.layout.activity_main);
 
         initViews();
-        setupValidation();
     }
 
     private void initViews() {
         rcvSourceNews = findViewById(R.id.rcv_source_news);
         rcvSourceNews.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
-//        spnCountry = findViewById(R.id.spinner_country);
-//        spnCountry.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//                String selected = parent.getSelectedItem().toString();
-//                country = CommonUtil.Mapper.NewsCountry(selected);
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> parent) {
-//
-//            }
-//        });
+        rcvArticleNews = findViewById(R.id.rcv_articles_news_main);
+        rcvArticleNews.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+
+        editKeyword = findViewById(R.id.edit_query_keyword);
 
         spnCategory = findViewById(R.id.spinner_category);
         spnCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -76,6 +71,7 @@ public class MainActivity extends BaseActivity implements OnRecyclerViewItemClic
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String selected = parent.getSelectedItem().toString();
                 category = CommonUtil.Mapper.NewsCategory(selected);
+                editKeyword.setText("");
             }
 
             @Override
@@ -88,9 +84,61 @@ public class MainActivity extends BaseActivity implements OnRecyclerViewItemClic
         btnLoadSourceNews.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                rcvSourceNews.setVisibility(View.VISIBLE);
+                rcvArticleNews.setVisibility(View.GONE);
+                if(validation != null) {
+                    validation.clear();
+                }
+                setupValidation();
                 if(validation.validate()) {
                     doLoadSourceNews();
                 }
+            }
+        });
+
+        btnLoadArticleNews = findViewById(R.id.btn_load_article_news);
+        btnLoadArticleNews.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(validation != null) {
+                    validation.clear();
+                }
+                setupValidation2();
+                if(validation.validate()) {
+                    spnCategory.setSelection(0);
+                    final String keyword = editKeyword.getText().toString();
+                    rcvSourceNews.setVisibility(View.GONE);
+                    rcvArticleNews.setVisibility(View.VISIBLE);
+                    doSearchArticleNews(keyword);
+                }
+            }
+        });
+    }
+
+    private void doSearchArticleNews(String keyword) {
+        showProgressDialog(null, getString(R.string.progress_loading), false);
+        Call<RespArticleNewsModel> call = service.searchArticleNews(keyword, API_KEY);
+        call.enqueue(new Callback<RespArticleNewsModel>() {
+            @Override
+            public void onResponse(Call<RespArticleNewsModel> call, Response<RespArticleNewsModel> response) {
+                dismissProgressDialog();
+                // check response if status is ok
+                if(response.body().getStatus().equals("ok")) {
+                    List<Article> articles = response.body().getArticles();
+                    if(articles.size() > 0) {
+                        final ArticleAdapter articleAdapter = new ArticleAdapter(articles);
+                        articleAdapter.setOnRecyclerViewItemClickListener(MainActivity.this);
+                        rcvArticleNews.setAdapter(articleAdapter);
+                    } else {
+                        Toast.makeText(MainActivity.this, getText(R.string.no_data_fund), Toast.LENGTH_LONG).show();
+                        rcvArticleNews.setAdapter(null);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RespArticleNewsModel> call, Throwable t) {
+                dismissProgressDialog();
             }
         });
     }
@@ -99,13 +147,6 @@ public class MainActivity extends BaseActivity implements OnRecyclerViewItemClic
         validation = new AwesomeValidation(BASIC);
         CustomValidationCallback customValidationCb = setupValidationCb();
         CustomErrorReset customErrReset = setupCustomErrReset();
-//        validation.addValidation(this,
-//                R.id.spinner_country,
-//                setupCustomValidation(getString(R.string.select_country)),
-//                customValidationCb,
-//                customErrReset,
-//                R.string.validation_error_select
-//        );
         validation.addValidation(this,
                 R.id.spinner_category,
                 setupCustomValidation(getString(R.string.select_category)),
@@ -113,6 +154,11 @@ public class MainActivity extends BaseActivity implements OnRecyclerViewItemClic
                 customErrReset,
                 R.string.validation_error_select
         );
+    }
+
+    private void setupValidation2() {
+        validation = new AwesomeValidation(BASIC);
+        validation.addValidation(editKeyword, "[a-zA-Z0-9_-]+", "alphanumeric only ");
     }
 
     private CustomValidation setupCustomValidation(final String strNoSelectedItem) {
@@ -189,6 +235,14 @@ public class MainActivity extends BaseActivity implements OnRecyclerViewItemClic
                     Intent articleNewsActivity = new Intent(this, ArticleNewsActivity.class);
                     articleNewsActivity.putExtra("sources", sourceNews.getId());
                     startActivity(articleNewsActivity);
+                }
+                break;
+            case R.id.article_layout:
+                Article article = (Article) view.getTag();
+                if (!TextUtils.isEmpty(article.getUrl())) {
+                    Intent webActivity = new Intent(this, DetailArticleActivity.class);
+                    webActivity.putExtra("url", article.getUrl());
+                    startActivity(webActivity);
                 }
                 break;
         }

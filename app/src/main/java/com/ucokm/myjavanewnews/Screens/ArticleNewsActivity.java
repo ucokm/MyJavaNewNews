@@ -10,7 +10,7 @@ import android.view.View;
 
 import com.ucokm.myjavanewnews.Adapters.ArticleAdapter;
 import com.ucokm.myjavanewnews.DataModel.Article;
-import com.ucokm.myjavanewnews.DataModel.RespNewsModel;
+import com.ucokm.myjavanewnews.DataModel.RespArticleNewsModel;
 import com.ucokm.myjavanewnews.Network.ApiClient;
 import com.ucokm.myjavanewnews.Network.ApiInterface;
 import com.ucokm.myjavanewnews.R;
@@ -43,10 +43,10 @@ public class ArticleNewsActivity extends BaseActivity implements OnRecyclerViewI
 
     private void doLoadNews(String sources) {
         showProgressDialog(null, getString(R.string.progress_loading), false);
-        Call<RespNewsModel> call = service.getArticleNews(sources, API_KEY);
-        call.enqueue(new Callback<RespNewsModel>() {
+        Call<RespArticleNewsModel> call = service.getArticleNews(sources, API_KEY);
+        call.enqueue(new Callback<RespArticleNewsModel>() {
             @Override
-            public void onResponse(Call<RespNewsModel> call, Response<RespNewsModel> response) {
+            public void onResponse(Call<RespArticleNewsModel> call, Response<RespArticleNewsModel> response) {
                 dismissProgressDialog();
                 // check response if status is ok
                 if(response.body().getStatus().equals("ok")) {
@@ -60,7 +60,7 @@ public class ArticleNewsActivity extends BaseActivity implements OnRecyclerViewI
             }
 
             @Override
-            public void onFailure(Call<RespNewsModel> call, Throwable t) {
+            public void onFailure(Call<RespArticleNewsModel> call, Throwable t) {
                 dismissProgressDialog();
             }
         });

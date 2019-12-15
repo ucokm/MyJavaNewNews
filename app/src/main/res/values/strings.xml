@@ -13,7 +13,7 @@
         <item>India</item>
     </string-array>
     <string name="category_label">Choose a Category</string>
-    <string name="select_category">-- select Category --</string>
+    <string name="select_category">-- Select Category --</string>
     <string-array name="category_arrays">
         <item>@string/select_category</item>
         <item>Business</item>
@@ -26,6 +26,9 @@
     </string-array>
     <string name="submit">Submit</string>
     <string name="load_source_news">Load Source News</string>
+    <string name="load_article_news">Load Article News</string>
     <string name="progress_loading">Loading, Please Wait...</string>
     <string name="validation_error_select">Must Select an Item</string>
+    <string name="label_OR">--- OR ---</string>
+    <string name="no_data_fund">No Data Found!</string>
 </resources>

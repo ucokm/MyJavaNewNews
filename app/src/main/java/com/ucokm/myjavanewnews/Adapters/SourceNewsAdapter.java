@@ -70,4 +70,9 @@ public class SourceNewsAdapter extends RecyclerView.Adapter<SourceNewsAdapter.Vi
             });
         }
     }
+
+    public void reset() {
+        sourceNewsList = null;
+        this.notifyDataSetChanged();
+    }
 }
