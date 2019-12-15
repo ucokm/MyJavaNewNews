@@ -7,14 +7,14 @@
     android:orientation="vertical"
     tools:context=".Screens.MainActivity">
 
-    <Spinner
-        android:id="@+id/spinner_country"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:entries="@array/country_arrays"
-        android:paddingTop="12dp"
-        android:paddingBottom="12dp"
-        android:prompt="@string/country_label" />
+    <!--<Spinner-->
+        <!--android:id="@+id/spinner_country"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:entries="@array/country_arrays"-->
+        <!--android:paddingTop="12dp"-->
+        <!--android:paddingBottom="12dp"-->
+        <!--android:prompt="@string/country_label" />-->
     <Spinner
         android:id="@+id/spinner_category"
         android:layout_width="match_parent"
@@ -24,14 +24,14 @@
         android:entries="@array/category_arrays"
         android:prompt="@string/category_label" />
     <Button
-        android:id="@+id/btn_load_news"
+        android:id="@+id/btn_load_sources_news"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="16dp"
-        android:text="@string/submit"/>
+        android:text="@string/load_source_news"/>
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/activity_main_rv"
+        android:id="@+id/rcv_source_news"
         android:paddingTop="16dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

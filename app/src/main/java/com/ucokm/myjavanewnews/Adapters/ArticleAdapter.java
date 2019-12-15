@@ -1,6 +1,5 @@
 package com.ucokm.myjavanewnews.Adapters;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -18,7 +17,6 @@ import java.util.List;
 
 public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHolder> {
     private List<Article> articleArrayList;
-    private Context context;
     private OnRecyclerViewItemClickListener onRecyclerViewItemClickListener;
 
     public ArticleAdapter(List<Article> articleArrayList) {
@@ -68,6 +66,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
             });
         }
     }
+
     public void setOnRecyclerViewItemClickListener(OnRecyclerViewItemClickListener onRecyclerViewItemClickListener) {
         this.onRecyclerViewItemClickListener = onRecyclerViewItemClickListener;
     }

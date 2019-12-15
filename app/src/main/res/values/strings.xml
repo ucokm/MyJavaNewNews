@@ -1,8 +1,9 @@
 <resources>
     <string name="app_name">MyJavaNewNews</string>
     <string name="country_label">Choose a Country</string>
+    <string name="select_country">-- Select Country --</string>
     <string-array name="country_arrays">
-        <item>-- Select Country --</item>
+        <item>@string/select_country</item>
         <item>Indonesia</item>
         <item>United States</item>
         <item>France</item>
@@ -12,8 +13,9 @@
         <item>India</item>
     </string-array>
     <string name="category_label">Choose a Category</string>
+    <string name="select_category">-- select Category --</string>
     <string-array name="category_arrays">
-        <item>-- Select Category --</item>
+        <item>@string/select_category</item>
         <item>Business</item>
         <item>Entertainment</item>
         <item>General</item>
@@ -23,6 +25,7 @@
         <item>Technology</item>
     </string-array>
     <string name="submit">Submit</string>
+    <string name="load_source_news">Load Source News</string>
     <string name="progress_loading">Loading, Please Wait...</string>
     <string name="validation_error_select">Must Select an Item</string>
 </resources>

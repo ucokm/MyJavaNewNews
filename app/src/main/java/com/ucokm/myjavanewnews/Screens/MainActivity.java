@@ -19,8 +19,11 @@ import com.basgeekball.awesomevalidation.utility.custom.CustomErrorReset;
 import com.basgeekball.awesomevalidation.utility.custom.CustomValidation;
 import com.basgeekball.awesomevalidation.utility.custom.CustomValidationCallback;
 import com.ucokm.myjavanewnews.Adapters.ArticleAdapter;
+import com.ucokm.myjavanewnews.Adapters.SourceNewsAdapter;
 import com.ucokm.myjavanewnews.DataModel.Article;
 import com.ucokm.myjavanewnews.DataModel.RespNewsModel;
+import com.ucokm.myjavanewnews.DataModel.RespSourceNewsModel;
+import com.ucokm.myjavanewnews.DataModel.SourceNews;
 import com.ucokm.myjavanewnews.Network.ApiClient;
 import com.ucokm.myjavanewnews.Network.ApiInterface;
 import com.ucokm.myjavanewnews.R;
@@ -36,9 +39,9 @@ import retrofit2.Response;
 import static com.basgeekball.awesomevalidation.ValidationStyle.BASIC;
 
 public class MainActivity extends BaseActivity implements OnRecyclerViewItemClickListener {
-    private RecyclerView rcv_main;
+    private RecyclerView rcvSourceNews;
     private Spinner spnCountry, spnCategory;
-    private Button btnSubmit;
+    private Button btnLoadSourceNews;
     private String country = "";
     private String category = "";
     final ApiInterface service = ApiClient.getClient().create(ApiInterface.class);
@@ -54,22 +57,22 @@ public class MainActivity extends BaseActivity implements OnRecyclerViewItemClic
     }
 
     private void initViews() {
-        rcv_main = findViewById(R.id.activity_main_rv);
-        rcv_main.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
+        rcvSourceNews = findViewById(R.id.rcv_source_news);
+        rcvSourceNews.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
-        spnCountry = findViewById(R.id.spinner_country);
-        spnCountry.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                String selected = parent.getSelectedItem().toString();
-                country = CommonUtil.Mapper.NewsCountry(selected);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
+//        spnCountry = findViewById(R.id.spinner_country);
+//        spnCountry.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                String selected = parent.getSelectedItem().toString();
+//                country = CommonUtil.Mapper.NewsCountry(selected);
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parent) {
+//
+//            }
+//        });
 
         spnCategory = findViewById(R.id.spinner_category);
         spnCategory.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -85,12 +88,12 @@ public class MainActivity extends BaseActivity implements OnRecyclerViewItemClic
             }
         });
 
-        btnSubmit = findViewById(R.id.btn_load_news);
-        btnSubmit.setOnClickListener(new View.OnClickListener() {
+        btnLoadSourceNews = findViewById(R.id.btn_load_sources_news);
+        btnLoadSourceNews.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if(validation.validate()) {
-                    doLoadNews();
+                    doLoadSourceNews();
                 }
             }
         });
@@ -100,16 +103,16 @@ public class MainActivity extends BaseActivity implements OnRecyclerViewItemClic
         validation = new AwesomeValidation(BASIC);
         CustomValidationCallback customValidationCb = setupValidationCb();
         CustomErrorReset customErrReset = setupCustomErrReset();
-        validation.addValidation(this,
-                R.id.spinner_country,
-                setupCustomValidation("-- Select Country --"),
-                customValidationCb,
-                customErrReset,
-                R.string.validation_error_select
-        );
+//        validation.addValidation(this,
+//                R.id.spinner_country,
+//                setupCustomValidation(getString(R.string.select_country)),
+//                customValidationCb,
+//                customErrReset,
+//                R.string.validation_error_select
+//        );
         validation.addValidation(this,
                 R.id.spinner_category,
-                setupCustomValidation("-- Select Category --"),
+                setupCustomValidation(getString(R.string.select_category)),
                 customValidationCb,
                 customErrReset,
                 R.string.validation_error_select
@@ -151,6 +154,31 @@ public class MainActivity extends BaseActivity implements OnRecyclerViewItemClic
         };
     }
 
+    private void doLoadSourceNews() {
+        showProgressDialog(null, getString(R.string.progress_loading), false);
+        Call<RespSourceNewsModel> call = service.getSourceNews(category, API_KEY);
+        call.enqueue(new Callback<RespSourceNewsModel>() {
+            @Override
+            public void onResponse(Call<RespSourceNewsModel> call, Response<RespSourceNewsModel> response) {
+                dismissProgressDialog();
+                // check response if status is ok
+                if(response.body().getStatus().equals("ok")) {
+                    List<SourceNews> sources = response.body().getSources();
+                    if(sources.size() > 0) {
+                        final SourceNewsAdapter sourceNewsAdapter = new SourceNewsAdapter(sources);
+                        sourceNewsAdapter.setOnRecyclerViewItemClickListener(MainActivity.this);
+                        rcvSourceNews.setAdapter(sourceNewsAdapter);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<RespSourceNewsModel> call, Throwable t) {
+                dismissProgressDialog();
+            }
+        });
+    }
+
     private void doLoadNews() {
         showProgressDialog(null, getString(R.string.progress_loading), false);
         Call<RespNewsModel> call = service.getNewsCategories(category, country, API_KEY);
@@ -165,7 +193,7 @@ public class MainActivity extends BaseActivity implements OnRecyclerViewItemClic
                         Toast.makeText(getApplicationContext(), "Total articles : " + articles.size(), Toast.LENGTH_LONG).show();
                         final ArticleAdapter articleAdapter = new ArticleAdapter(articles);
                         articleAdapter.setOnRecyclerViewItemClickListener(MainActivity.this);
-                        rcv_main.setAdapter(articleAdapter);
+                        rcvSourceNews.setAdapter(articleAdapter);
                     }
                 }
             }
@@ -184,7 +212,6 @@ public class MainActivity extends BaseActivity implements OnRecyclerViewItemClic
 
     @Override
     public void onItemClick(int position, View view) {
-        Toast.makeText(getApplicationContext(), "onItemClick : ", Toast.LENGTH_LONG).show();
         switch (view.getId()) {
             case R.id.article_adapter_ll_parent:
                 Article article = (Article) view.getTag();
