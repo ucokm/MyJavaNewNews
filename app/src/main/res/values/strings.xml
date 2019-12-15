@@ -24,4 +24,5 @@
     </string-array>
     <string name="submit">Submit</string>
     <string name="progress_loading">Loading, Please Wait...</string>
+    <string name="validation_error_select">Must Select an Item</string>
 </resources>

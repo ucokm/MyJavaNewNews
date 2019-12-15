@@ -1,4 +1,4 @@
-package com.ucokm.myjavanewnews;
+package com.ucokm.myjavanewnews.Screens;
 
 import android.app.ProgressDialog;
 import android.support.v7.app.AppCompatActivity;

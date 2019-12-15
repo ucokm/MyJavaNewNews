@@ -1,5 +1,6 @@
-package com.ucokm.myjavanewnews;
+package com.ucokm.myjavanewnews.Screens;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -7,13 +8,20 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import com.basgeekball.awesomevalidation.AwesomeValidation;
+import com.basgeekball.awesomevalidation.ValidationHolder;
+import com.basgeekball.awesomevalidation.utility.custom.CustomErrorReset;
+import com.basgeekball.awesomevalidation.utility.custom.CustomValidation;
+import com.basgeekball.awesomevalidation.utility.custom.CustomValidationCallback;
 import com.ucokm.myjavanewnews.Adapters.ArticleAdapter;
 import com.ucokm.myjavanewnews.DataModel.Article;
 import com.ucokm.myjavanewnews.DataModel.RespNewsModel;
 import com.ucokm.myjavanewnews.Network.ApiClient;
 import com.ucokm.myjavanewnews.Network.ApiInterface;
+import com.ucokm.myjavanewnews.R;
 import com.ucokm.myjavanewnews.Utils.CommonUtil;
 import com.ucokm.myjavanewnews.Utils.OnRecyclerViewItemClickListener;
 
@@ -23,6 +31,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import static com.basgeekball.awesomevalidation.ValidationStyle.BASIC;
+
 public class MainActivity extends BaseActivity implements OnRecyclerViewItemClickListener {
     private RecyclerView rcv_main;
     private Spinner spnCountry, spnCategory;
@@ -30,6 +40,7 @@ public class MainActivity extends BaseActivity implements OnRecyclerViewItemClic
     private String country = "";
     private String category = "";
     final ApiInterface service = ApiClient.getClient().create(ApiInterface.class);
+    AwesomeValidation validation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +48,7 @@ public class MainActivity extends BaseActivity implements OnRecyclerViewItemClic
         setContentView(R.layout.activity_main);
 
         initViews();
+        setupValidation();
     }
 
     private void initViews() {
@@ -75,9 +87,66 @@ public class MainActivity extends BaseActivity implements OnRecyclerViewItemClic
         btnSubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                doLoadNews();
+                if(validation.validate()) {
+                    doLoadNews();
+                }
             }
         });
+    }
+
+    private void setupValidation() {
+        validation = new AwesomeValidation(BASIC);
+        CustomValidationCallback customValidationCb = setupValidationCb();
+        CustomErrorReset customErrReset = setupCustomErrReset();
+        validation.addValidation(this,
+                R.id.spinner_country,
+                setupCustomValidation("-- Select Country --"),
+                customValidationCb,
+                customErrReset,
+                R.string.validation_error_select
+        );
+        validation.addValidation(this,
+                R.id.spinner_category,
+                setupCustomValidation("-- Select Category --"),
+                customValidationCb,
+                customErrReset,
+                R.string.validation_error_select
+        );
+    }
+
+    private CustomValidation setupCustomValidation(final String strNoSelectedItem) {
+        return new CustomValidation() {
+            @Override
+            public boolean compare(ValidationHolder validationHolder) {
+                if (((Spinner) validationHolder.getView()).getSelectedItem().toString().equals(strNoSelectedItem)) {
+                    return false;
+                } else {
+                    return true;
+                }
+            }
+        };
+    }
+
+    private CustomValidationCallback setupValidationCb() {
+        return new CustomValidationCallback() {
+            @Override
+            public void execute(ValidationHolder validationHolder) {
+                TextView textViewError = (TextView) ((Spinner) validationHolder.getView()).getSelectedView();
+                textViewError.setError(validationHolder.getErrMsg());
+                textViewError.setTextColor(Color.RED);
+            }
+        };
+    }
+
+    private CustomErrorReset setupCustomErrReset() {
+        return new CustomErrorReset() {
+            @Override
+            public void reset(ValidationHolder validationHolder) {
+                TextView textViewError = (TextView) ((Spinner) validationHolder.getView()).getSelectedView();
+                textViewError.setError(null);
+                textViewError.setTextColor(Color.BLACK);
+            }
+        };
     }
 
     private void doLoadNews() {
