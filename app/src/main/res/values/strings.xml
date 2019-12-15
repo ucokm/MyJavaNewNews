@@ -1,13 +1,27 @@
 <resources>
     <string name="app_name">MyJavaNewNews</string>
-    <string-array name="category_arrays">
-        <item>Malaysia</item>
-        <item>United States</item>
+    <string name="country_label">Choose a Country</string>
+    <string-array name="country_arrays">
+        <item>-- Select Country --</item>
         <item>Indonesia</item>
+        <item>United States</item>
         <item>France</item>
         <item>Italy</item>
         <item>Singapore</item>
         <item>New Zealand</item>
         <item>India</item>
     </string-array>
+    <string name="category_label">Choose a Category</string>
+    <string-array name="category_arrays">
+        <item>-- Select Category --</item>
+        <item>Business</item>
+        <item>Entertainment</item>
+        <item>General</item>
+        <item>Health</item>
+        <item>Science</item>
+        <item>Sports</item>
+        <item>Technology</item>
+    </string-array>
+    <string name="submit">Submit</string>
+    <string name="progress_loading">Loading, Please Wait...</string>
 </resources>
