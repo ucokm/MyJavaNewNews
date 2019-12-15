@@ -1,9 +1,11 @@
 package com.ucokm.myjavanewnews.Screens;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -177,21 +179,21 @@ public class MainActivity extends BaseActivity implements OnRecyclerViewItemClic
 
     @Override
     public void setOnRecyclerViewItemClickListener(OnRecyclerViewItemClickListener listener) {
-
+        this.setOnRecyclerViewItemClickListener(listener);
     }
 
     @Override
     public void onItemClick(int position, View view) {
         Toast.makeText(getApplicationContext(), "onItemClick : ", Toast.LENGTH_LONG).show();
-//        switch (view.getId()) {
-//            case R.id.article_adapter_ll_parent:
-//                Article article = (Article) view.getTag();
-//                if (!TextUtils.isEmpty(article.getUrl())) {
-//                    Intent webActivity = new Intent(this, WebActivity.class);
-//                    webActivity.putExtra("url", article.getUrl());
-//                    startActivity(webActivity);
-//                }
-//                break;
-//        }
+        switch (view.getId()) {
+            case R.id.article_adapter_ll_parent:
+                Article article = (Article) view.getTag();
+                if (!TextUtils.isEmpty(article.getUrl())) {
+                    Intent webActivity = new Intent(this, DetailArticleActivity.class);
+                    webActivity.putExtra("url", article.getUrl());
+                    startActivity(webActivity);
+                }
+                break;
+        }
     }
 }
