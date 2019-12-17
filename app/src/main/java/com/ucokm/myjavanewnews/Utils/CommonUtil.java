@@ -1,6 +1,12 @@
 package com.ucokm.myjavanewnews.Utils;
 
+import com.ucokm.myjavanewnews.Network.ApiClient;
+import com.ucokm.myjavanewnews.Network.ApiInterface;
+
 public class CommonUtil {
+
+    public static ApiInterface service = ApiClient.getClient().create(ApiInterface.class);
+
     public static class Mapper {
         public static String NewsCountry(final String countryName) {
             switch (countryName) {

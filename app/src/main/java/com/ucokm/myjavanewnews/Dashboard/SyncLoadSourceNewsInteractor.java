@@ -31,7 +31,7 @@ class SyncLoadSourceNewsInteractor {
 
             @Override
             public void onFailure(Call<RespSourceNewsModel> call, Throwable t) {
-                listener.onLoadArticleNewsFail();
+                listener.onLoadSourceNewsFail();
             }
         });
     }

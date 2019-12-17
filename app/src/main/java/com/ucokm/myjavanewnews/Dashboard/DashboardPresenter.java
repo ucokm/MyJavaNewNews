@@ -32,7 +32,7 @@ public class DashboardPresenter implements OnLoadDataListener {
 
     @Override
     public void onLoadArticleNewsFail() {
-
+        iDashboardView.onErrorArticleList();
     }
 
     @Override
@@ -42,6 +42,6 @@ public class DashboardPresenter implements OnLoadDataListener {
 
     @Override
     public void onLoadSourceNewsFail() {
-
+        iDashboardView.onErrorArticleList();
     }
 }
