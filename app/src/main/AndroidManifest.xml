@@ -12,14 +12,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".Screens.MainActivity">
+        </activity>
+        <activity android:name=".Screens.DetailArticleActivity"/>
+        <activity android:name=".Screens.ArticleNewsActivity"/>
+        <activity android:name=".Dashboard.DashboardView">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Screens.DetailArticleActivity"/>
-        <activity android:name=".Screens.ArticleNewsActivity"/>
     </application>
 
 </manifest>
