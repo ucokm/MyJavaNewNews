@@ -68,23 +68,23 @@ public class DashboardView extends BaseActivity implements IDashboardView, OnRec
             }
         });
 
-//        btnLoadSourceNews = findViewById(R.id.btn_load_sources_news);
-//        btnLoadSourceNews.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                showProgressDialog(null, getString(R.string.progress_loading), false);
-//                rcvSourceNews.setVisibility(View.VISIBLE);
-//                rcvArticleNews.setVisibility(View.GONE);
-//                dashboardPresenter.doSyncLoadSourceNews(category);
-////                if(validation != null) {
-////                    validation.clear();
-////                }
-////                setupValidation();
-////                if(validation.validate()) {
-////                    doLoadSourceNews();
-////                }
-//            }
-//        });
+        btnLoadSourceNews = findViewById(R.id.btn_load_sources_news);
+        btnLoadSourceNews.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showProgressDialog(null, getString(R.string.progress_loading), false);
+                rcvSourceNews.setVisibility(View.VISIBLE);
+                rcvArticleNews.setVisibility(View.GONE);
+                dashboardPresenter.doSyncLoadSourceNews(category);
+//                if(validation != null) {
+//                    validation.clear();
+//                }
+//                setupValidation();
+//                if(validation.validate()) {
+//                    doLoadSourceNews();
+//                }
+            }
+        });
 
         btnLoadArticleNews = findViewById(R.id.btn_load_article_news);
         btnLoadArticleNews.setOnClickListener(new View.OnClickListener() {
